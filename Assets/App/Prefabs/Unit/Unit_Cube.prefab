@@ -162,7 +162,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3561017486595060236, guid: 71b09dcf3837fa94ebb7eb509740042d, type: 3}
       propertyPath: CollisionScale
-      value: 1.5
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

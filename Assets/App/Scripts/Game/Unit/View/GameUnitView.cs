@@ -8,7 +8,7 @@ namespace App.Scripts.Game.Unit.View
 
     private Renderer _renderer;
 
-    public float Height => transform.localScale.y * CollisionScale;
+    public float Height => transform.localScale.y;
     public float CollisionRadius => transform.localScale.x * CollisionScale;
 
     private void Awake()

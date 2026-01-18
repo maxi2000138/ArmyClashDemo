@@ -22,7 +22,5 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   DetectionRadiusMultiplier: 1
-  AvoidanceStrength: 2
-  MinCollisionDistance: 1
-  AvoidanceWeightOffset: 1
-  MinAttackDistance: 1
+  AvoidanceStrength: 1
+  RotationSmoothness: 4

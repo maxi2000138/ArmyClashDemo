@@ -1,5 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using App.Scripts.Game.Unit.Features.Movement.Configs;
 using App.Scripts.Infrastructure.StaticData;
+using App.Scripts.Utils;
 using UnityEngine;
 
 namespace App.Scripts.Game.Unit.Features.Movement
@@ -8,7 +9,6 @@ namespace App.Scripts.Game.Unit.Features.Movement
   {
     private readonly GameModel _gameModel;
     private readonly IStaticDataService _staticData;
-    private readonly Dictionary<GameUnit, float> _currentSpeeds = new Dictionary<GameUnit, float>();
 
     public UnitMover(GameModel gameModel, IStaticDataService staticData)
     {
@@ -20,55 +20,61 @@ namespace App.Scripts.Game.Unit.Features.Movement
     {
       if (unit.Target == null || !unit.Target.IsAlive)
       {
-        unit.CurrentDirection = Vector3.zero;
-        if (_currentSpeeds.ContainsKey(unit))
-          _currentSpeeds[unit] = Mathf.Lerp(_currentSpeeds[unit], 0f,
-            _staticData.MovementConfig.RotationSmoothness * Time.deltaTime);
+        StopUnit(unit);
         return;
       }
 
-      var currentPosition = unit.transform.position;
-      var targetPosition = unit.Target.transform.position;
-      var directionToTarget = targetPosition - currentPosition;
-      var distance = directionToTarget.magnitude;
-
-      var requiredDistance = _staticData.AttackConfig.AttackRadius +
-                             unit.View.CollisionRadius +
-                             unit.Target.View.CollisionRadius;
-
-      if (distance <= requiredDistance)
+      var directionToTarget = unit.Target.transform.position - unit.transform.position;
+      if (directionToTarget.magnitude <= _staticData.AttackConfig.AttackRadius)
       {
-        unit.CurrentDirection = Vector3.zero;
-        if (_currentSpeeds.ContainsKey(unit))
-          _currentSpeeds[unit] = Mathf.Lerp(_currentSpeeds[unit], 0f,
-            _staticData.MovementConfig.RotationSmoothness * Time.deltaTime);
+        StopUnit(unit);
         return;
       }
 
-      var seekDirection = directionToTarget.normalized;
-      var separationDirection = CalculateSeparation(unit, currentPosition);
+      var separationDirection = CalculateSeparation(unit, unit.transform.position);
+      var desiredDirection = CurrentDirection(unit, directionToTarget.normalized, separationDirection, _staticData.MovementConfig, out var currentDirection);
+      var smoothDirection = SmoothDirection(unit, currentDirection, desiredDirection, _staticData.MovementConfig);
 
-      var movementConfig = _staticData.MovementConfig;
+      var smoothSpeed = SmoothSpeed(unit, _staticData.MovementConfig);
+
+      unit.transform.position += smoothDirection * (smoothSpeed * Time.deltaTime);
+    }
+
+    private Vector3 CurrentDirection(GameUnit unit, Vector3 seekDirection, Vector3 separationDirection, MovementConfig movementConfig, out Vector3 currentDirection)
+    {
       var desiredDirection = (seekDirection + separationDirection * movementConfig.AvoidanceStrength).normalized;
 
-      var currentDirection = unit.CurrentDirection;
+      currentDirection = unit.MovementData.Direction;
       if (currentDirection.magnitude < 0.01f)
         currentDirection = desiredDirection;
       else
         currentDirection = currentDirection.normalized;
+      return desiredDirection;
+    }
 
+    private Vector3 SmoothDirection(GameUnit unit, Vector3 currentDirection, Vector3 desiredDirection, MovementConfig movementConfig)
+    {
       var smoothDirection = Vector3.Slerp(currentDirection, desiredDirection,
         movementConfig.RotationSmoothness * Time.deltaTime);
+      unit.MovementData.Direction = smoothDirection;
 
-      if (!_currentSpeeds.TryGetValue(unit, out var currentSpeed))
-        currentSpeed = 0f;
+      return smoothDirection;
+    }
 
-      var smoothSpeed = Mathf.Lerp(currentSpeed, unit.Characteristics.Speed,
+    private float SmoothSpeed(GameUnit unit, MovementConfig movementConfig)
+    {
+      var smoothSpeed = Mathf.Lerp(unit.MovementData.CurrentSpeed, unit.Characteristics.Speed,
         movementConfig.RotationSmoothness * Time.deltaTime);
-      _currentSpeeds[unit] = smoothSpeed;
+      unit.MovementData.CurrentSpeed = smoothSpeed;
 
-      unit.CurrentDirection = smoothDirection;
-      unit.transform.position += smoothDirection * smoothSpeed * Time.deltaTime;
+      return smoothSpeed;
+    }
+
+    private void StopUnit(GameUnit unit)
+    {
+      unit.MovementData.Direction = Vector3.zero;
+      unit.MovementData.CurrentSpeed = Mathf.Lerp(unit.MovementData.CurrentSpeed, 0f,
+        _staticData.MovementConfig.RotationSmoothness * Time.deltaTime);
     }
 
     private Vector3 CalculateSeparation(GameUnit unit, Vector3 currentPosition)
@@ -85,7 +91,7 @@ namespace App.Scripts.Game.Unit.Features.Movement
         var directionAway = currentPosition - otherUnit.transform.position;
         var distanceSquared = directionAway.sqrMagnitude;
 
-        if (distanceSquared > detectionRadiusSquared || distanceSquared < 0.001f)
+        if (distanceSquared > detectionRadiusSquared || distanceSquared < Mathematics.Epsilon)
           continue;
 
         var distance = Mathf.Sqrt(distanceSquared);
