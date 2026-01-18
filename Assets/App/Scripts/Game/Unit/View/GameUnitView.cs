@@ -20,6 +20,7 @@ namespace App.Scripts.Game.Unit.View
     {
       _renderer.material = material;
       transform.localScale = size;
+      transform.localPosition = Vector3.up * size.y / 2f;
     }
   }
 }

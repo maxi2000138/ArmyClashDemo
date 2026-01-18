@@ -13,7 +13,7 @@ namespace App.Scripts.Infrastructure.States.Game
   public class GameLoopState : IEnterState, ITickableState
   {
     private readonly List<GameUnit> _deadUnits = new List<GameUnit>();
-    
+
     private readonly GameModel _gameModel;
     private readonly IGameFactory _gameFactory;
     private readonly IUnitMover _unitMover;
@@ -23,7 +23,7 @@ namespace App.Scripts.Infrastructure.States.Game
 
     private IGameStateMachine _stateMachine;
 
-    public GameLoopState(GameModel gameModel, IGameFactory gameFactory, IUnitMover unitMover, 
+    public GameLoopState(GameModel gameModel, IGameFactory gameFactory, IUnitMover unitMover,
       IUnitTargetFinder unitTargetFinder, IUnitAttacker unitAttacker, IScreenService screenService)
     {
       _gameModel = gameModel;
@@ -47,7 +47,7 @@ namespace App.Scripts.Infrastructure.States.Game
 
         if (_unitAttacker.TryAttack(unit))
         {
-          if(!unit.Target.IsAlive)
+          if (!unit.Target.IsAlive)
             MarkDead(unit);
         }
         else
@@ -60,7 +60,7 @@ namespace App.Scripts.Infrastructure.States.Game
 
       CheckGameEnd();
     }
-    
+
     private void UpdateTargetIfNeeded(GameUnit unit)
     {
       if (unit.Target != null && unit.Target.IsAlive)
@@ -80,7 +80,7 @@ namespace App.Scripts.Infrastructure.States.Game
       {
         foreach (var unit in _deadUnits)
           _gameFactory.RemoveUnit(unit);
-        
+
         _deadUnits.Clear();
       }
     }

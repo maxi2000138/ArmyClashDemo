@@ -1,13 +1,12 @@
 using App.Scripts.Game.Unit.Features.Stats.Data;
 using App.Scripts.Infrastructure.States;
 using App.Scripts.Infrastructure.States.Game;
-using App.Scripts.Infrastructure.UI.Data;
-using App.Scripts.Infrastructure.UI.ScreenService;
+using App.Scripts.Infrastructure.UI;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace App.Scripts.Infrastructure.UI.Screens
+namespace App.Scripts.Game.UI.Screens
 {
   public class GameEndScreen : BaseScreen
   {
@@ -35,4 +34,3 @@ namespace App.Scripts.Infrastructure.UI.Screens
     }
   }
 }
-

@@ -32,7 +32,7 @@ namespace App.Scripts.Infrastructure.UI.Factory
       unitStats.SetUnit(unit);
       return unitStats;
     }
-    
+
     public void DestroyUnitStats(UnitViewStats unitViewStats)
     {
       Object.Destroy(unitViewStats.gameObject);

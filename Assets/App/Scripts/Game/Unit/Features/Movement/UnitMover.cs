@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using App.Scripts.Infrastructure.StaticData;
 using UnityEngine;
 
@@ -9,6 +8,7 @@ namespace App.Scripts.Game.Unit.Features.Movement
   {
     private readonly GameModel _gameModel;
     private readonly IStaticDataService _staticData;
+    private readonly Dictionary<GameUnit, float> _currentSpeeds = new Dictionary<GameUnit, float>();
 
     public UnitMover(GameModel gameModel, IStaticDataService staticData)
     {
@@ -18,66 +18,81 @@ namespace App.Scripts.Game.Unit.Features.Movement
 
     public void MoveToTarget(GameUnit unit)
     {
-      if (unit.Target == null)
-        return;
-
-      var direction = CalculateDirection(unit);
-      unit.transform.position += direction * (_staticData.MovementConfig.MoveSpeed * Time.deltaTime);
-    }
-
-    private Vector3 CalculateDirection(GameUnit unit)
-    {
-      var targetDirection = DirectionToTarget(unit, unit.Target);
-      var avoidanceDirection = CalculateAvoidance(unit);
-
-      var finalDirection = (targetDirection + avoidanceDirection * _staticData.MovementConfig.AvoidanceStrength).normalized;
-      return finalDirection;
-    }
-
-    private Vector3 DirectionToTarget(GameUnit unit, GameUnit target)
-    {
-      return (target.transform.position - unit.transform.position).normalized;
-    }
-
-    private Vector3 CalculateAvoidance(GameUnit unit)
-    {
-      var avoidanceVector = Vector3.zero;
-      var unitRadius = unit.View.CollisionRadius;
-      var nearbyUnits = GetNearbyUnits(unit, unitRadius);
-
-      foreach (var nearbyUnit in nearbyUnits)
+      if (unit.Target == null || !unit.Target.IsAlive)
       {
-        var distance = Vector3.Distance(unit.transform.position, nearbyUnit.transform.position);
-        var nearbyUnitRadius = nearbyUnit.View.CollisionRadius;
-        var minDistance = unitRadius + nearbyUnitRadius;
-
-        var minCollisionDistance = _staticData.MovementConfig.MinCollisionDistance;
-        if (distance < minDistance && distance > minCollisionDistance)
-        {
-          var directionFromNearby = (unit.transform.position - nearbyUnit.transform.position).normalized;
-          var avoidanceWeightOffset = _staticData.MovementConfig.AvoidanceWeightOffset;
-          var weight = 1.0f / (distance + avoidanceWeightOffset);
-          avoidanceVector += directionFromNearby * weight;
-        }
+        unit.CurrentDirection = Vector3.zero;
+        if (_currentSpeeds.ContainsKey(unit))
+          _currentSpeeds[unit] = Mathf.Lerp(_currentSpeeds[unit], 0f,
+            _staticData.MovementConfig.RotationSmoothness * Time.deltaTime);
+        return;
       }
 
-      return avoidanceVector.normalized;
+      var currentPosition = unit.transform.position;
+      var targetPosition = unit.Target.transform.position;
+      var directionToTarget = targetPosition - currentPosition;
+      var distance = directionToTarget.magnitude;
+
+      var requiredDistance = _staticData.AttackConfig.AttackRadius +
+                             unit.View.CollisionRadius +
+                             unit.Target.View.CollisionRadius;
+
+      if (distance <= requiredDistance)
+      {
+        unit.CurrentDirection = Vector3.zero;
+        if (_currentSpeeds.ContainsKey(unit))
+          _currentSpeeds[unit] = Mathf.Lerp(_currentSpeeds[unit], 0f,
+            _staticData.MovementConfig.RotationSmoothness * Time.deltaTime);
+        return;
+      }
+
+      var seekDirection = directionToTarget.normalized;
+      var separationDirection = CalculateSeparation(unit, currentPosition);
+
+      var movementConfig = _staticData.MovementConfig;
+      var desiredDirection = (seekDirection + separationDirection * movementConfig.AvoidanceStrength).normalized;
+
+      var currentDirection = unit.CurrentDirection;
+      if (currentDirection.magnitude < 0.01f)
+        currentDirection = desiredDirection;
+      else
+        currentDirection = currentDirection.normalized;
+
+      var smoothDirection = Vector3.Slerp(currentDirection, desiredDirection,
+        movementConfig.RotationSmoothness * Time.deltaTime);
+
+      if (!_currentSpeeds.TryGetValue(unit, out var currentSpeed))
+        currentSpeed = 0f;
+
+      var smoothSpeed = Mathf.Lerp(currentSpeed, unit.Characteristics.Speed,
+        movementConfig.RotationSmoothness * Time.deltaTime);
+      _currentSpeeds[unit] = smoothSpeed;
+
+      unit.CurrentDirection = smoothDirection;
+      unit.transform.position += smoothDirection * smoothSpeed * Time.deltaTime;
     }
 
-    private IEnumerable<GameUnit> GetNearbyUnits(GameUnit unit, float unitRadius)
+    private Vector3 CalculateSeparation(GameUnit unit, Vector3 currentPosition)
     {
-      var detectionRadius = unitRadius * _staticData.MovementConfig.DetectionRadiusMultiplier;
+      var separationForce = Vector3.zero;
+      var detectionRadius = unit.View.CollisionRadius * _staticData.MovementConfig.DetectionRadiusMultiplier;
+      var detectionRadiusSquared = detectionRadius * detectionRadius;
 
-      return _gameModel.AllUnits
-        .Where(other => {
-          if (other == unit)
-            return false;
+      foreach (var otherUnit in _gameModel.AllUnits)
+      {
+        if (otherUnit == unit || !otherUnit.IsAlive)
+          continue;
 
-          var distance = Vector3.Distance(unit.transform.position, other.transform.position);
-          var otherRadius = other.View.CollisionRadius;
-          var maxDetectionDistance = detectionRadius + otherRadius;
-          return distance <= maxDetectionDistance;
-        });
+        var directionAway = currentPosition - otherUnit.transform.position;
+        var distanceSquared = directionAway.sqrMagnitude;
+
+        if (distanceSquared > detectionRadiusSquared || distanceSquared < 0.001f)
+          continue;
+
+        var distance = Mathf.Sqrt(distanceSquared);
+        separationForce += directionAway.normalized / distance;
+      }
+
+      return separationForce.normalized;
     }
   }
 }

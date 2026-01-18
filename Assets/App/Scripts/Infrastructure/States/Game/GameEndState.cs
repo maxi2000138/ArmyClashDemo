@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using App.Scripts.Game;
+using App.Scripts.Game.UI.Screens;
 using App.Scripts.Game.Unit;
 using App.Scripts.Game.Unit.Features.Stats.Data;
 using App.Scripts.Infrastructure.UI.Data;
-using App.Scripts.Infrastructure.UI.Screens;
 using App.Scripts.Infrastructure.UI.ScreenService;
 
 namespace App.Scripts.Infrastructure.States.Game
@@ -34,8 +34,7 @@ namespace App.Scripts.Infrastructure.States.Game
       return firstTeamHasAlive ? UnitTeam.First : UnitTeam.Second;
     }
 
-    private bool HasAliveUnits(IEnumerable<GameUnit> units) => 
+    private bool HasAliveUnits(IEnumerable<GameUnit> units) =>
       units.Any(unit => unit.IsAlive);
   }
 }
-

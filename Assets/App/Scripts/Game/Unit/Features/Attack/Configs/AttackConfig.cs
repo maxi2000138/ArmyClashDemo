@@ -7,8 +7,5 @@ namespace App.Scripts.Game.Unit.Features.Attack.Configs
   public class AttackConfig : SerializedScriptableObject
   {
     public float AttackRadius = 1.0f;
-    public float AttackDamage = 1.0f;
-    public float AttackCooldown = 1.0f;
   }
 }
-

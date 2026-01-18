@@ -41,13 +41,13 @@ namespace App.Scripts.Game.Unit.Features.Attack
 
     private bool IsCooldownReady(GameUnit unit)
     {
-      var cooldown = _staticData.AttackConfig.AttackCooldown;
+      var cooldown = unit.Characteristics.AtkSpd;
       return unit.AttackData.IsCooldownReady(cooldown);
     }
 
     private void PerformAttack(GameUnit attacker, GameUnit target)
     {
-      var damage = _staticData.AttackConfig.AttackDamage;
+      var damage = attacker.Characteristics.Atk;
       var newHealth = target.Health.Value - damage;
       target.Health.SetCurrentHealth(newHealth);
     }

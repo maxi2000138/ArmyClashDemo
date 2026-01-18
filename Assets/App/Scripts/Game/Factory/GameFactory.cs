@@ -1,5 +1,6 @@
 using App.Scripts.Game.Unit;
 using App.Scripts.Game.Unit.Configs;
+using App.Scripts.Game.Unit.Features.Characteristics.Configs;
 using App.Scripts.Game.Unit.Features.Health;
 using App.Scripts.Game.Unit.Features.Stats;
 using App.Scripts.Game.Unit.Features.Stats.Data;
@@ -37,25 +38,41 @@ namespace App.Scripts.Game.Factory
 
       var unit = Object.Instantiate(prefab, at, Quaternion.identity, _sceneConfig.EnemiesParent);
 
-      unit.Construct(team);
+      var characteristicsConfig = _staticData.UnitCharacteristicsConfig;
+      unit.Construct(team, characteristicsConfig.BaseHp, characteristicsConfig.BaseAtk,
+        characteristicsConfig.BaseSpeed, characteristicsConfig.BaseAtkSpd);
+
+      ApplyModifiers(unit, stats, characteristicsConfig);
 
       unit.View.UpdateColorAndSize(material, Vector3.one * size);
       var unitViewStats = _uiFactory.CreateUnitViewStats(unit, _sceneConfig.HealthViewsParent);
       _uniViewStatsUpdater.AddUnitStats(unitViewStats);
 
-      unit.Health.SetMaxValue(10);
-      unit.Health.SetCurrentHealth(10);
+      unit.Health.SetMaxValue(unit.Characteristics.Hp);
+      unit.Health.SetCurrentHealth(unit.Characteristics.Hp);
 
       _gameModel.AddUnit(unit);
 
       return unit;
     }
 
+    private void ApplyModifiers(GameUnit unit, UnitStats stats, UnitCharacteristicsConfig config)
+    {
+      if (config.FormModifiers.TryGetValue(stats.Form, out var formModifiers))
+        unit.Characteristics.ApplyModifiers(formModifiers);
+
+      if (config.SizeModifiers.TryGetValue(stats.Size, out var sizeModifiers))
+        unit.Characteristics.ApplyModifiers(sizeModifiers);
+
+      if (config.ColorModifiers.TryGetValue(stats.Color, out var colorModifiers))
+        unit.Characteristics.ApplyModifiers(colorModifiers);
+    }
+
     public void RemoveUnit(GameUnit unit)
     {
       _gameModel.RemoveUnit(unit);
       _uniViewStatsUpdater.DestroyUnitStats(unit);
-      
+
       Object.Destroy(unit.gameObject);
     }
   }

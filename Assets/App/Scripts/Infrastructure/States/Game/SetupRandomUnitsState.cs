@@ -33,8 +33,8 @@ namespace App.Scripts.Infrastructure.States.Game
       ClearAllUnits();
 
       var unitsPerTeam = _staticData.SpawnConfig.UnitsPerTeam;
-      var firstTeamSpawnData = _spawnDataGenerator.GetRandomSpawnData(unitsPerTeam, _sceneConfig.FirstTeamZone);
-      var secondTeamSpawnData = _spawnDataGenerator.GetRandomSpawnData(unitsPerTeam, _sceneConfig.SecondTeamZone);
+      IEnumerable<UnitSpawnData> firstTeamSpawnData = _spawnDataGenerator.GetRandomSpawnData(unitsPerTeam, _sceneConfig.FirstTeamZone);
+      IEnumerable<UnitSpawnData> secondTeamSpawnData = _spawnDataGenerator.GetRandomSpawnData(unitsPerTeam, _sceneConfig.SecondTeamZone);
 
       foreach (var spawnData in firstTeamSpawnData)
         _gameFactory.CreateUnit(spawnData.Stats, UnitTeam.First, spawnData.Position);
@@ -51,4 +51,3 @@ namespace App.Scripts.Infrastructure.States.Game
     }
   }
 }
-

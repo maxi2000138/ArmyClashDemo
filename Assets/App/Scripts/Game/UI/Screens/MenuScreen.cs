@@ -1,10 +1,10 @@
 using App.Scripts.Infrastructure.States;
 using App.Scripts.Infrastructure.States.Game;
-using App.Scripts.Infrastructure.UI.ScreenService;
+using App.Scripts.Infrastructure.UI;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace App.Scripts.Infrastructure.UI.Screens
+namespace App.Scripts.Game.UI.Screens
 {
   public class MenuScreen : BaseScreen
   {
@@ -32,4 +32,3 @@ namespace App.Scripts.Infrastructure.UI.Screens
     }
   }
 }
-

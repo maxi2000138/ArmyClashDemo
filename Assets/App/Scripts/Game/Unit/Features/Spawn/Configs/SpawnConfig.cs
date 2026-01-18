@@ -9,4 +9,3 @@ namespace App.Scripts.Game.Unit.Features.Spawn.Configs
     public int UnitsPerTeam = 20;
   }
 }
-

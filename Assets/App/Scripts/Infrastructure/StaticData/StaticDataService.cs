@@ -1,5 +1,6 @@
 ﻿using App.Scripts.Game.Unit.Configs;
 using App.Scripts.Game.Unit.Features.Attack.Configs;
+using App.Scripts.Game.Unit.Features.Characteristics.Configs;
 using App.Scripts.Game.Unit.Features.Movement.Configs;
 using App.Scripts.Game.Unit.Features.Spawn.Configs;
 using App.Scripts.Infrastructure.UI.Configs;
@@ -17,6 +18,7 @@ namespace App.Scripts.Infrastructure.StaticData
     public AttackConfig AttackConfig { get; private set; }
     public SpawnConfig SpawnConfig { get; private set; }
     public UiPrefabsConfig UiPrefabsConfig { get; private set; }
+    public UnitCharacteristicsConfig UnitCharacteristicsConfig { get; private set; }
 
 
     public void Load()
@@ -27,6 +29,7 @@ namespace App.Scripts.Infrastructure.StaticData
       AttackConfig = LoadConfig<AttackConfig>();
       SpawnConfig = LoadConfig<SpawnConfig>();
       UiPrefabsConfig = LoadConfig<UiPrefabsConfig>();
+      UnitCharacteristicsConfig = LoadConfig<UnitCharacteristicsConfig>();
     }
 
     private T LoadConfig<T>() where T : ScriptableObject => Resources.Load<T>(ConfigsPath + typeof(T).Name);

@@ -1,5 +1,6 @@
 using App.Scripts.Game.Unit.Configs;
 using App.Scripts.Game.Unit.Features.Attack.Configs;
+using App.Scripts.Game.Unit.Features.Characteristics.Configs;
 using App.Scripts.Game.Unit.Features.Health;
 using App.Scripts.Game.Unit.Features.Movement.Configs;
 using App.Scripts.Game.Unit.Features.Spawn.Configs;
@@ -15,6 +16,7 @@ namespace App.Scripts.Infrastructure.StaticData
     MovementConfig MovementConfig { get; }
     AttackConfig AttackConfig { get; }
     SpawnConfig SpawnConfig { get; }
+    UnitCharacteristicsConfig UnitCharacteristicsConfig { get; }
 
     void Load();
   }

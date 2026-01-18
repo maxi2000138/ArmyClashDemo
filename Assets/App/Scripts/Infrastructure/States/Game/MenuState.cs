@@ -1,5 +1,5 @@
+using App.Scripts.Game.UI.Screens;
 using App.Scripts.Infrastructure.UI.Data;
-using App.Scripts.Infrastructure.UI.Screens;
 using App.Scripts.Infrastructure.UI.ScreenService;
 
 namespace App.Scripts.Infrastructure.States.Game
@@ -17,9 +17,8 @@ namespace App.Scripts.Infrastructure.States.Game
     {
       var menuScreen = _screenService.OpenScreen(ScreenType.Menu) as MenuScreen;
       menuScreen.Construct(stateMachine);
-      
+
       stateMachine.Enter<SetupRandomUnitsState>();
     }
   }
 }
-

@@ -21,8 +21,8 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
-  DetectionRadiusMultiplier: 0.5
-  AvoidanceStrength: 0.9
-  MoveSpeed: 1
-  MinCollisionDistance: 0.01
-  AvoidanceWeightOffset: 0.1
+  DetectionRadiusMultiplier: 1
+  AvoidanceStrength: 2
+  MinCollisionDistance: 1
+  AvoidanceWeightOffset: 1
+  MinAttackDistance: 1
