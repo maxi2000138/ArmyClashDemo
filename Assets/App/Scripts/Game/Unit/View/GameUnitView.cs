@@ -1,11 +1,16 @@
 ﻿using UnityEngine;
 
-namespace App.Scripts.Game.Unit
+namespace App.Scripts.Game.Unit.View
 {
   public class GameUnitView : MonoBehaviour
   {
+    [SerializeField] private float CollisionScale = 1f;
+
     private Renderer _renderer;
-    
+
+    public float Height => transform.localScale.y * CollisionScale;
+    public float CollisionRadius => transform.localScale.x * CollisionScale;
+
     private void Awake()
     {
       _renderer = GetComponentInChildren<Renderer>();

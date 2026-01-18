@@ -1,25 +1,26 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using App.Scripts.Utils;
+using App.Scripts.Utils.Extensions;
 using UnityEngine;
 
 namespace App.Scripts.Game.Unit.Features.FindTarget
 {
-  public class UnitTargetFinder
+  public class UnitTargetFinder : IUnitTargetFinder
   {
-    private readonly SimulationModel _simulationModel;
+    private readonly GameModel _gameModel;
 
-    public UnitTargetFinder(SimulationModel simulationModel)
+    public UnitTargetFinder(GameModel gameModel)
     {
-      _simulationModel = simulationModel;
+      _gameModel = gameModel;
     }
-    
+
     public bool TryFindTarget(GameUnit unit, out GameUnit target)
     {
       var enemies = EnemiesFor(unit).ToList();
 
       if (enemies.Count > 0)
-      { 
+      {
         target = enemies.PickRandomOrDefault();
         return true;
       }
@@ -27,13 +28,13 @@ namespace App.Scripts.Game.Unit.Features.FindTarget
       target = null;
       return false;
     }
-    
+
     private IReadOnlyList<GameUnit> EnemiesFor(GameUnit unit)
     {
-      if (_simulationModel.FirstTeamUnits.Contains(unit))
-        return _simulationModel.SecondTeamUnits;
+      if (_gameModel.FirstTeamUnits.Contains(unit))
+        return _gameModel.SecondTeamUnits;
 
-      return _simulationModel.FirstTeamUnits;
+      return _gameModel.FirstTeamUnits;
     }
   }
 }

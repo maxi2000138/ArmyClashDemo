@@ -1,7 +1,7 @@
 ﻿using System;
 using Random = UnityEngine.Random;
 
-namespace App.Scripts.Utils
+namespace App.Scripts.Utils.Extensions
 {
   public static class EnumExtensions
   {

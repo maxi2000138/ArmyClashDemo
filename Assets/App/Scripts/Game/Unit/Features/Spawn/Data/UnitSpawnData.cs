@@ -1,7 +1,8 @@
-﻿using App.Scripts.Game.Unit.Stats;
+﻿using App.Scripts.Game.Unit.Features.Stats;
+using App.Scripts.Game.Unit.Features.Stats.Data;
 using UnityEngine;
 
-namespace App.Scripts.Game.Field.Data
+namespace App.Scripts.Game.Unit.Features.Spawn.Data
 {
   public struct UnitSpawnData
   {

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace App.Scripts.Utils
+namespace App.Scripts.Utils.Extensions
 {
   public static class VectorExtensions
   {
@@ -59,7 +59,7 @@ namespace App.Scripts.Utils
       v = tmp;
       return v;
     }
-    
+
     public static Vector3 AddZ(this Vector3 v, float zDelta)
     {
       var tmp = v;
@@ -84,5 +84,5 @@ namespace App.Scripts.Utils
       return v;
     }
   }
-  
+
 }

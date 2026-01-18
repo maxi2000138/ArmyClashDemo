@@ -1,15 +1,15 @@
-﻿using System;
-using App.Scripts.Game.Unit.Stats;
+﻿using System.Collections.Generic;
+using App.Scripts.Game.Unit.Features.Stats.Data;
+using Sirenix.OdinInspector;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 namespace App.Scripts.Game.Unit.Configs
 {
-  [Serializable]
-  public class UnitViewConfig
+  [CreateAssetMenu(fileName = nameof(UnitViewConfig), menuName = "Configs/" + nameof(UnitViewConfig), order = -1000)]
+  public class UnitViewConfig : SerializedScriptableObject
   {
-    public SerializedDictionary<UnitForm, GameUnit> Units;
-    public SerializedDictionary<UnitSize, float> Sizes;
-    public SerializedDictionary<UnitColor, Material> Materials;
+    public Dictionary<UnitForm, GameUnit> Units;
+    public Dictionary<UnitSize, float> Scales;
+    public Dictionary<UnitColor, Material> Materials;
   }
 }

@@ -1,8 +1,8 @@
-﻿namespace App.Scripts.Game.Unit.Stats
+﻿namespace App.Scripts.Game.Unit.Features.Stats.Data
 {
   public enum UnitTeam
   {
-    First,
-    Second,
+    First = 1,
+    Second = 2,
   }
 }

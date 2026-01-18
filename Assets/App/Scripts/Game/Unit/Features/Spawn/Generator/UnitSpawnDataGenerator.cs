@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
-using App.Scripts.Game.Field.Data;
-using App.Scripts.Game.Unit.Stats;
-using App.Scripts.Utils;
+using App.Scripts.Game.Unit.Features.Spawn.Data;
+using App.Scripts.Game.Unit.Features.Spawn.Zone;
+using App.Scripts.Game.Unit.Features.Stats.Data;
+using App.Scripts.Utils.Extensions;
 using UnityEngine;
 
-namespace App.Scripts.Game.Field
+namespace App.Scripts.Game.Unit.Features.Spawn.Generator
 {
 
   public class UnitSpawnDataGenerator : ISpawnDataGenerator
@@ -23,7 +24,7 @@ namespace App.Scripts.Game.Field
       var center = spawnZone.transform.position;
       var halfSizeX = spawnZone.Size.x * 0.5f;
       var halfSizeZ = spawnZone.Size.y * 0.5f;
-      
+
       return new Vector3(
         center.x + Random.Range(-halfSizeX, halfSizeX),
         center.y,
