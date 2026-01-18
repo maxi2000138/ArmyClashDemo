@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using App.Scripts.Game;
+using App.Scripts.Game.Explosion;
 using App.Scripts.Game.Factory;
 using App.Scripts.Game.Unit;
 using App.Scripts.Game.Unit.Features.Attack;
@@ -20,11 +21,13 @@ namespace App.Scripts.Infrastructure.States.Game
     private readonly IUnitTargetFinder _unitTargetFinder;
     private readonly IUnitAttacker _unitAttacker;
     private readonly IScreenService _screenService;
+    private readonly ExplosionService _explosionService;
 
     private IGameStateMachine _stateMachine;
 
     public GameLoopState(GameModel gameModel, IGameFactory gameFactory, IUnitMover unitMover,
-      IUnitTargetFinder unitTargetFinder, IUnitAttacker unitAttacker, IScreenService screenService)
+      IUnitTargetFinder unitTargetFinder, IUnitAttacker unitAttacker, IScreenService screenService,
+      ExplosionService explosionService)
     {
       _gameModel = gameModel;
       _gameFactory = gameFactory;
@@ -32,6 +35,7 @@ namespace App.Scripts.Infrastructure.States.Game
       _unitTargetFinder = unitTargetFinder;
       _unitAttacker = unitAttacker;
       _screenService = screenService;
+      _explosionService = explosionService;
     }
 
     public void Enter(IGameStateMachine stateMachine)
@@ -40,6 +44,13 @@ namespace App.Scripts.Infrastructure.States.Game
     }
 
     public void Tick()
+    {
+      _explosionService.Tick();
+      UpdateUnits();
+      CheckGameEnd();
+    }
+
+    private void UpdateUnits()
     {
       foreach (var unit in _gameModel.AllUnits)
       {
@@ -57,8 +68,6 @@ namespace App.Scripts.Infrastructure.States.Game
       }
 
       RemoveDeadUnits();
-
-      CheckGameEnd();
     }
 
     private void UpdateTargetIfNeeded(GameUnit unit)

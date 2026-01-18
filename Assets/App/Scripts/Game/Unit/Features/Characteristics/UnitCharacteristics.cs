@@ -24,5 +24,13 @@ namespace App.Scripts.Game.Unit.Features.Characteristics
       Speed += modifiers.SpeedModifier;
       AtkSpd += modifiers.AtkSpdModifier;
     }
+
+    public void ReconfigureFromBase(float baseHp, float baseAtk, float baseSpeed, float baseAtkSpd)
+    {
+      Hp = baseHp;
+      Atk = baseAtk;
+      Speed = baseSpeed;
+      AtkSpd = baseAtkSpd;
+    }
   }
 }

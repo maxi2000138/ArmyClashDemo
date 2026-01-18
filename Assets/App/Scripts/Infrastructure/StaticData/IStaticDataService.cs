@@ -1,3 +1,4 @@
+using App.Scripts.Game.Explosion.Configs;
 using App.Scripts.Game.Unit.Configs;
 using App.Scripts.Game.Unit.Features.Attack.Configs;
 using App.Scripts.Game.Unit.Features.Characteristics.Configs;
@@ -17,6 +18,7 @@ namespace App.Scripts.Infrastructure.StaticData
     AttackConfig AttackConfig { get; }
     SpawnConfig SpawnConfig { get; }
     UnitCharacteristicsConfig UnitCharacteristicsConfig { get; }
+    ExplosionConfig ExplosionConfig { get; }
 
     void Load();
   }

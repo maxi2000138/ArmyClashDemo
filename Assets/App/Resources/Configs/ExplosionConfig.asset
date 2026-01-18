@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a7d8a8811edc4ae3bd98521399d8a7b7, type: 3}
-  m_Name: MovementConfig
+  m_Script: {fileID: 11500000, guid: 59cace982a3a39f428ea3a6f591d0a3d, type: 3}
+  m_Name: ExplosionConfig
   m_EditorClassIdentifier: 
   serializationData:
     SerializedFormat: 2
@@ -21,6 +21,5 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
-  DetectionRadiusMultiplier: 1
-  AvoidanceStrength: 0.9
-  RotationSmoothness: 8
+  Radius: 5
+  PushForce: 50

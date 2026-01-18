@@ -1,5 +1,4 @@
 ﻿using App.Scripts.Game.Unit;
-using App.Scripts.Game.Unit.Features.Health;
 using App.Scripts.Game.Unit.Features.Stats.View;
 using App.Scripts.Infrastructure.StaticData;
 using App.Scripts.Infrastructure.StaticData.BaseConfig;

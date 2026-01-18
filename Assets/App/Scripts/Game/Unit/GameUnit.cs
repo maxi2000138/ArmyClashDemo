@@ -19,6 +19,7 @@ namespace App.Scripts.Game.Unit
     public UnitMovementData MovementData { get; private set; }
     public GameUnit Target { get; private set; }
     public UnitTeam Team { get; private set; }
+    public UnitStats CurrentStats { get; private set; }
 
     public bool IsAlive => Health.Value > 0;
 
@@ -31,6 +32,11 @@ namespace App.Scripts.Game.Unit
       AttackData = new AttackData();
       Characteristics = new UnitCharacteristics(baseHp, baseAtk, baseSpeed, baseAtkSpd);
       MovementData = new UnitMovementData();
+    }
+
+    public void SetStats(UnitStats stats)
+    {
+      CurrentStats = stats;
     }
 
     public void SetTarget(GameUnit target)

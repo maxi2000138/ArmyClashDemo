@@ -1,6 +1,6 @@
 using App.Scripts.Game.Unit;
 using App.Scripts.Game.Unit.Configs;
-using App.Scripts.Game.Unit.Features.Characteristics.Configs;
+using App.Scripts.Game.Unit.Features.Characteristics;
 using App.Scripts.Game.Unit.Features.Health;
 using App.Scripts.Game.Unit.Features.Stats;
 using App.Scripts.Game.Unit.Features.Stats.Data;
@@ -19,15 +19,17 @@ namespace App.Scripts.Game.Factory
     private readonly SceneConfig _sceneConfig;
     private readonly IStaticDataService _staticData;
     private readonly UniViewStatsUpdater _uniViewStatsUpdater;
+    private readonly UnitCharacteristicsApplier _characteristicsApplier;
 
     public GameFactory(IStaticDataService staticData, SceneConfig sceneConfig, GameModel gameModel,
-      IUIFactory uiFactory, UniViewStatsUpdater uniViewStatsUpdater)
+      IUIFactory uiFactory, UniViewStatsUpdater uniViewStatsUpdater, UnitCharacteristicsApplier characteristicsApplier)
     {
       _staticData = staticData;
       _sceneConfig = sceneConfig;
       _gameModel = gameModel;
       _uiFactory = uiFactory;
       _uniViewStatsUpdater = uniViewStatsUpdater;
+      _characteristicsApplier = characteristicsApplier;
     }
 
     public GameUnit CreateUnit(UnitStats stats, UnitTeam team, Vector3 at)
@@ -42,7 +44,8 @@ namespace App.Scripts.Game.Factory
       unit.Construct(team, characteristicsConfig.BaseHp, characteristicsConfig.BaseAtk,
         characteristicsConfig.BaseSpeed, characteristicsConfig.BaseAtkSpd);
 
-      ApplyModifiers(unit, stats, characteristicsConfig);
+      _characteristicsApplier.ApplyModifiers(unit, stats);
+      unit.SetStats(stats);
 
       unit.View.UpdateColorAndSize(material, Vector3.one * size);
       var unitViewStats = _uiFactory.CreateUnitViewStats(unit, _sceneConfig.HealthViewsParent);
@@ -54,18 +57,6 @@ namespace App.Scripts.Game.Factory
       _gameModel.AddUnit(unit);
 
       return unit;
-    }
-
-    private void ApplyModifiers(GameUnit unit, UnitStats stats, UnitCharacteristicsConfig config)
-    {
-      if (config.FormModifiers.TryGetValue(stats.Form, out var formModifiers))
-        unit.Characteristics.ApplyModifiers(formModifiers);
-
-      if (config.SizeModifiers.TryGetValue(stats.Size, out var sizeModifiers))
-        unit.Characteristics.ApplyModifiers(sizeModifiers);
-
-      if (config.ColorModifiers.TryGetValue(stats.Color, out var colorModifiers))
-        unit.Characteristics.ApplyModifiers(colorModifiers);
     }
 
     public void RemoveUnit(GameUnit unit)
