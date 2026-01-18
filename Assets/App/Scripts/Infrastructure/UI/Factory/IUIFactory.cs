@@ -9,5 +9,6 @@ namespace App.Scripts.Infrastructure.UI.Factory
   {
     BaseScreen CreateScreen(ScreenType screenType);
     UnitViewStats CreateUnitViewStats(GameUnit unit, Transform parent);
+    void DestroyUnitStats(UnitViewStats unitViewStats);
   }
 }

@@ -9,8 +9,10 @@ namespace App.Scripts.Infrastructure.Installers.Game
   {
     public override void InstallBindings()
     {
-      Container.BindState<SetupUnitsState>();
+      Container.BindState<MenuState>();
+      Container.BindState<SetupRandomUnitsState>();
       Container.BindState<GameLoopState>();
+      Container.BindState<GameEndState>();
       Container.BindStateMachine<GameStateMachine>();
     }
   }

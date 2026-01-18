@@ -14,7 +14,7 @@ namespace App.Scripts.Infrastructure.EntryPoints
 
     public void Initialize()
     {
-      _gameStateMachine.Enter<SetupUnitsState>();
+      _gameStateMachine.Enter<MenuState>();
     }
   }
 }

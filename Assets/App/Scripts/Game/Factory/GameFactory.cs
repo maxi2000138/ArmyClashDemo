@@ -54,7 +54,9 @@ namespace App.Scripts.Game.Factory
     public void RemoveUnit(GameUnit unit)
     {
       _gameModel.RemoveUnit(unit);
-      Object.Destroy(unit);
+      _uniViewStatsUpdater.DestroyUnitStats(unit);
+      
+      Object.Destroy(unit.gameObject);
     }
   }
 }

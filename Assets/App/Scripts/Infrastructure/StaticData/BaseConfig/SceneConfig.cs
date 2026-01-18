@@ -9,6 +9,7 @@ namespace App.Scripts.Infrastructure.StaticData.BaseConfig
   {
     public SpawnZone FirstTeamZone;
     public SpawnZone SecondTeamZone;
+    public Transform ScreensParent;
     public Transform EnemiesParent;
     public Transform HealthViewsParent;
   }

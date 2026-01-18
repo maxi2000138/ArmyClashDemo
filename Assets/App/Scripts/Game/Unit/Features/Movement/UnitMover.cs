@@ -34,13 +34,16 @@ namespace App.Scripts.Game.Unit.Features.Movement
       return finalDirection;
     }
 
-    private Vector3 DirectionToTarget(GameUnit unit, GameUnit target) => (target.transform.position - unit.transform.position).normalized;
+    private Vector3 DirectionToTarget(GameUnit unit, GameUnit target)
+    {
+      return (target.transform.position - unit.transform.position).normalized;
+    }
 
     private Vector3 CalculateAvoidance(GameUnit unit)
     {
       var avoidanceVector = Vector3.zero;
       var unitRadius = unit.View.CollisionRadius;
-      IEnumerable<GameUnit> nearbyUnits = GetNearbyUnits(unit, unitRadius);
+      var nearbyUnits = GetNearbyUnits(unit, unitRadius);
 
       foreach (var nearbyUnit in nearbyUnits)
       {
@@ -48,10 +51,12 @@ namespace App.Scripts.Game.Unit.Features.Movement
         var nearbyUnitRadius = nearbyUnit.View.CollisionRadius;
         var minDistance = unitRadius + nearbyUnitRadius;
 
-        if (distance < minDistance && distance > 0.01f)
+        var minCollisionDistance = _staticData.MovementConfig.MinCollisionDistance;
+        if (distance < minDistance && distance > minCollisionDistance)
         {
           var directionFromNearby = (unit.transform.position - nearbyUnit.transform.position).normalized;
-          var weight = 1.0f / (distance + 0.1f);
+          var avoidanceWeightOffset = _staticData.MovementConfig.AvoidanceWeightOffset;
+          var weight = 1.0f / (distance + avoidanceWeightOffset);
           avoidanceVector += directionFromNearby * weight;
         }
       }
@@ -64,8 +69,10 @@ namespace App.Scripts.Game.Unit.Features.Movement
       var detectionRadius = unitRadius * _staticData.MovementConfig.DetectionRadiusMultiplier;
 
       return _gameModel.AllUnits
-        .Where(other => other != unit)
         .Where(other => {
+          if (other == unit)
+            return false;
+
           var distance = Vector3.Distance(unit.transform.position, other.transform.position);
           var otherRadius = other.View.CollisionRadius;
           var maxDetectionDistance = detectionRadius + otherRadius;

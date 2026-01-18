@@ -10,5 +10,7 @@ namespace App.Scripts.Game.Unit.Features.Movement.Configs
     public float DetectionRadiusMultiplier = 1.5f;
     public float AvoidanceStrength = 1.0f;
     public float MoveSpeed = 1.0f;
+    public float MinCollisionDistance = 0.01f;
+    public float AvoidanceWeightOffset = 0.1f;
   }
 }

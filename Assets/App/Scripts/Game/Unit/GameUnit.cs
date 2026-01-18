@@ -1,3 +1,4 @@
+using App.Scripts.Game.Unit.Features.Attack;
 using App.Scripts.Game.Unit.Features.Health;
 using App.Scripts.Game.Unit.Features.Stats.Data;
 using App.Scripts.Game.Unit.View;
@@ -10,6 +11,7 @@ namespace App.Scripts.Game.Unit
     [field: SerializeField] public GameUnitView View { get; private set; }
 
     public Health Health { get; private set; }
+    public AttackData AttackData { get; private set; }
     public GameUnit Target { get; private set; }
     public UnitTeam Team { get; private set; }
 
@@ -21,6 +23,7 @@ namespace App.Scripts.Game.Unit
       Team = team;
       Target = null;
       Health = new Health();
+      AttackData = new AttackData();
     }
 
     public void SetTarget(GameUnit target)

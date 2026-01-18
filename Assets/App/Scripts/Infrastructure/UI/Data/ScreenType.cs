@@ -2,7 +2,7 @@
 {
   public enum ScreenType
   {
-    Game,
+    Menu,
     GameEnd,
   }
 }
